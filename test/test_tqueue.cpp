@@ -54,11 +54,14 @@ TEST(Queue, return_true_when_queue_is_empty) {
 
 TEST(Queue, return_false_when_queue_isnt_empty) {
 	Queue<int> q(3);
+	q.push(2);
 	EXPECT_EQ(false, q.empty());
 }
 
 TEST(Queue, return_true_when_queue_is_full) {
-	Queue<int> q;
+	Queue<int> q(2);
+	q.push(2);
+	q.push(2);
 	EXPECT_EQ(true, q.full());
 }
 
@@ -81,8 +84,10 @@ TEST(Queue, right_algoritm) {
 	q.pop();
 	q.push(4); 
 	q.push(5);
-	EXPECT_EQ(true, q.full());
 	q.push(7);
-	for (int i = 0; i < 6; i++) std::cout<<q[i];
-	
+	q.push(8);
+	for (int i = 0; i < 8; i++) {
+		std::cout << q[i] << " ";
+	}
+	std::cout << std::endl;
 }

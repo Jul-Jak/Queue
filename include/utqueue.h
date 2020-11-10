@@ -138,6 +138,7 @@ public:
 	Queue(int n) :Vector(n) {
 		start = 0;
 		end = size - 1;
+		size = 0;
 	}
 
 	~Queue() {}
@@ -151,11 +152,22 @@ public:
 	}
 
 	void push(T elem) {
-		if (full()) resize(size_t(2.0 * capacity));
-		end++;
-		if (end == capacity) end = 0;
-		data[end] = elem;
-		size++;
+		if (full()) {
+			resize(size_t(capacity * 2.0));
+			start = 0;
+			end = capacity * 2.0 - size+1 ;
+			data[end-1] = elem;
+			size++;
+			end--;
+		}
+		else {
+			end++;
+			if (end == capacity) end = 0;
+			data[end] = elem;
+			size++;
+		}
+		for (int i = 0; i < capacity; i++) std::cout << data[i] << " ";
+		std::cout << "	size = " << size << " start = " << start << " end = " << end << std::endl;
 	}
 
 	void pop() {
@@ -163,6 +175,8 @@ public:
 		start++;
 		size--;
 		if (start == capacity ) start = 0;
+		for (int i = 0; i < capacity; i++) std::cout << data[i] << " ";
+		std::cout << "	size = " << size << " start = " << start << " end = " << end << std::endl;
 	}
 
 	bool empty() {
