@@ -109,12 +109,27 @@ public:
 	{
 		return this->data[index];
 	}
-};
+}; 
+
+/*.........................................................*/
 
 template <class T>
 class Queue : protected Vector<T> {
 private:
 	int start, end;
+	void resize(int n) {//переопределение перепаковки
+		T* temp = new T[n];
+		if (start < end)
+		{
+			for (size_t i = start; i <= end; i++) temp[i - start] = data[i];
+		}
+		else {
+			for (size_t i = start; i < size; i++) temp[i - start] = data[i];
+			for (size_t i = 0; i <= end; i++) temp[i + size - start] = data[i];
+		}
+		if (data) delete[]data;
+		data = temp;
+	}
 public:
 	Queue() :Vector() {
 		start = end = 0;
@@ -136,9 +151,9 @@ public:
 	}
 
 	void push(T elem) {
-		if ((end != 0) && (end != capacity)) end++;
-		if (end == capacity) end = 0;
 		if (full()) resize(size_t(2.0 * capacity));
+		end++;
+		if (end == capacity) end = 0;
 		data[end] = elem;
 		size++;
 	}
@@ -147,7 +162,7 @@ public:
 		if (size == 0) throw - 1;
 		start++;
 		size--;
-		if (start == capacity) start = 0;
+		if (start == capacity ) start = 0;
 	}
 
 	bool empty() {
@@ -155,10 +170,11 @@ public:
 	}
 
 	bool full() {
-		return size == capacity;
+		return (size == capacity);
 	}
 
 	T operator[](int index)const {
 		return this->data[index];
 	}
 };
+

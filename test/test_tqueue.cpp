@@ -68,3 +68,21 @@ TEST(Queue, return_false_when_queue_isnt_full) {
 	q.push(4);
 	EXPECT_EQ(false, q.full());
 }
+
+TEST(Queue, right_algoritm) {
+	Queue<int> q(6);
+	q.push(10);
+	q.push(11);
+	q.push(0);
+	q.push(1);
+	q.push(2);
+	q.push(3);
+	q.pop();
+	q.pop();
+	q.push(4); 
+	q.push(5);
+	EXPECT_EQ(true, q.full());
+	q.push(7);
+	for (int i = 0; i < 6; i++) std::cout<<q[i];
+	
+}
