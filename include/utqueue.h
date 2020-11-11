@@ -1,172 +1,204 @@
 ﻿#pragma once
-
-const int STACK_MAX_SIZE = 1000000;
-
 template<class T>
-class TStack {
-private:
-	T* array;
-	int maxsize;
-	int size;
-
-public:
-	TStack(int ms = 100); //конструктор с параметром
-	TStack(const TStack& ts); //конструктор копирования
-	~TStack(); //деструктор
-	TStack& operator=(const TStack& ts); //присваивание
-	void clear(); //очистить стек
-	bool isFull(); //заполнен ли стек?
-	bool isEmpty(); //пуст ли стек?
-	T top(); //вершина стека
-	T pop(); //удалить элемент из стека
-	void push(const T& element); //добавить элемент в стек
-	T operator[](int pos);
-	bool operator!=(const TStack& s) const;
-	bool operator==(const TStack& s) const;
-};
-
-template<class T>
-TStack<T>::TStack(int ms) {
-	if (ms <= 0 || ms > STACK_MAX_SIZE) throw ms;
-	maxsize = ms;
-	size = 0;
-	array = new T[maxsize];
-}
-
-template<class T>
-TStack<T>::TStack(const TStack<T>& ts) {
-	maxsize = ts.maxsize;
-	size = ts.size;
-	array = new T[maxsize];
-	for (int i = 0; i < size; i++) array[i] = ts.array[i];
-}
-
-template<class T>
-TStack<T>::~TStack() {
-	delete[] array;
-}
-
-template <class T>
-TStack<T>& TStack<T>::operator=(const TStack& s) {
-	maxsize = s.maxsize;
-	size = s.size;
-	if (array!=0) delete[] array;
-	array = new T[maxsize];
-	for (int i = 0; i < size; i++)
-		array[i] = s.array[i];
-	return *this;
-}
-
-template<class T>
-bool TStack<T>::isFull() {
-	return size == maxsize;
-}
-
-template<class T>
-bool TStack<T>::isEmpty() {
-	return size == 0;
-}
-
-template<class T>
-T TStack<T>::top() {
-	if (isEmpty()) throw - 1;
-	return array[size - 1];
-}
-
-template<class T>
-T TStack<T>::pop() {
-	if (isEmpty()) throw - 1;
-	size--;
-	return array[size];
-}
-
-template<class T>
-void TStack<T>::push(const T& element) {
-	if (isFull())
-	{
-		maxsize *= 2.0;
-		T* temp = new int[maxsize];
-		memmove(temp, array, sizeof(array) * size);
-		delete[] array;
-		array = temp;
-	}
-	array[size] = element;
-	size++;;
-}
-
-template<class T>
-void TStack<T>::clear() {
-	size = 0;
-}
-
-template <class T>
-T TStack<T>::operator[](int pos) {
-	if (pos < 0 || pos > maxsize) throw -1;
-	return array[pos];
-}
-
-template <class T>
-bool TStack<T>::operator!=(const TStack& s) const {
-	return !(s == *this);
-}
-
-template <class T>
-bool TStack<T>::operator==(const TStack& s) const {
-	if ((size != s.size) || (maxsize != s.maxsize))	return false;
-	for (int i = 0; i < maxsize; i++)
-	{
-		if (array[i] != s.array[i])	return false;
-	}
-	return true;
-}
-
-template <class T>
-class TQueue : public TStack <T> {
+class Vector
+{
 protected:
-	TStack<T> St_1, St_2;
-	int start_index;
-	public:
-		TQueue(int s=7) {
-			TStack <T> temp(s);
-			St_1 = St_2 = temp;
-			start_index = 0;
-		}
+	T* data;
+	size_t size;
+	size_t capacity;
+public:
+	Vector()
+	{
+		data = nullptr;
+		size = capacity = 0;
+	}
 
-		~TQueue() {}
+	~Vector()
+	{
+		delete[]data;
+		data = nullptr;
+	}
 
-		void pop() {
-			while (!St_1.isEmpty())
-			{
-				St_2.push(St_1.top());
-				St_1.pop();
-			}
-			St_2.pop();
-			while (!St_2.isEmpty())
-			{
-				St_1.push(St_2.top());
-				St_2.pop();
-			}
-		}
+	Vector(int n)
+	{
+		size = capacity = n;
+		data = new T[n];
+		for (int i = 0; i < n; i++) data[i] = 0;
+	}
 
-		void push(int n) {
-			St_1.push(n);
-		}
-		
-		bool operator==(const TQueue& q) {
-			if ((!q.St_1.isEmpty()) && (!St_1.isEmpty()))
-				if (St_1 == q.St_1) return true;
-			if ((!q.St_2.isEmpty()) && (!St_2.isEmpty()))
-				if (St_2 == q.St_2) return true;
-			return false;
-		}
+	Vector(int n, T* array)
+	{
+		size = capacity = n;
+		data = new T[size];
+		for (size_t i = 0; i < size; i++) data[i] = array[i];
+	}
 
-		bool operator!=(const TQueue& q) {
-			if (q == *this) return false;
-			return true;
-		}
+	Vector(const Vector& v)
+	{
+		delete[]data;
+		size = v.size;
+		capacity = v.capacity;
+		T* data = new T[size];
+		for (size_t i = 0; i < size; i++) data[i] = v.data[i];
+	}
 
-		T operator[](int pos) {
-			if (St_2.isEmpty()) return St_1[pos + start_index];
-			return St_2[pos];
+	void push_back(T elem)
+	{
+		if (size == capacity)
+		{
+			capacity = 1.5 * size;
+			T* temp = new T[capacity];
+			for (int i = 0; i < size; i++)	temp[i] = data[i];
+			if (data != nullptr)
+				delete[] data;
+			data = temp;
 		}
+		data[size++] = elem;
+	}
+
+	void pop_back()
+	{
+		size--;
+	}
+
+	void resize(int n)
+	{
+		T* temp = new T[n];
+		unsigned int i;
+		if (n > size)
+		{
+			for (i = 0; i < size; i++) temp[i] = data[i];
+			for (i = size; i < n; i++) temp[i] = 0;
+		}
+		else
+			for (i = 0; i < n; i++) temp[i] = data[i];
+		if (data != nullptr)
+			delete[] data;
+		data = temp;
+	}
+
+	void insert(T Elem, int index)
+	{
+		T* temp = new T[size + 1];
+		unsigned int i;
+		for (int i = 0; i < index; i++) temp[i] = data[i];
+		temp[index] = Elem;
+		for (i = index; i < size; i++) temp[i + 1] = data[i];
+		if (data != nullptr)
+			delete[] data;
+		data = temp;
+	}
+
+	void erase(int index)
+	{
+		T* temp = new T[capacity];
+		for (int i = 0; i < index - 1; i++)
+			temp[i] = data[i];
+		for (int i = index - 1; i < size; i++)
+			temp[i] = data[i + 1];
+		delete[]data;
+		data = temp;
+		size--;
+	}
+
+	T& operator[](int index)
+	{
+		return this->data[index];
+	}
+	T operator[](int index)const
+	{
+		return this->data[index];
+	}
+}; 
+
+/*.........................................................*/
+
+template <class T>
+class Queue : protected Vector<T> {
+private:
+	int start, end;
+	void resize(int n) {//переопределение перепаковки
+		T* temp = new T[n];
+		if (start < end)
+		{
+			for (size_t i = start; i <= end; i++) temp[i - start] = data[i];
+			start = 0;
+			end = n - size - 1;
+			for (size_t i = end + 1; i < n; i++) temp[i] = 0;
+		}
+		else {
+			for (size_t i = start; i < size; i++) temp[i - start] = data[i];
+			for (size_t i = 0; i <= end; i++) temp[i + size - start] = data[i];
+			start = 0;
+			end = n - size - 1;
+			for (size_t i = end + 1; i < n; i++) temp[i] = 0;
+		}
+		if (data) delete[]data;
+		data = temp;
+		capacity = n;
+	}
+public:
+	Queue() :Vector() {
+		start = end = 0;
+	}
+
+	Queue(int n) :Vector(n) {
+		start = 0;
+		end = size - 1;
+		size = 0;
+	}
+
+	~Queue() {}
+
+	T Front() {
+		return data[start];
+	}
+
+	T Back() {
+		return data[end];
+	}
+
+	void push(T elem) {
+		if (full()) resize(size_t(capacity * 2.0));
+			end++;
+			if (end == capacity) end = 0;
+			data[end] = elem;
+			size++;
+		for (int i = 0; i < capacity; i++) std::cout << data[i] << " ";
+		std::cout << "			push():	size = " << size << " start = " << start << " end = " << end << " capacity ="<< capacity << std::endl;
+		std::cout<< std::endl;
+	}
+
+	void pop() {
+			if (size == 0) throw - 1;
+			start++;
+			size--;
+			if (start == capacity) start = 0;
+			for (int i = 0; i < capacity; i++) std::cout << data[i] << " ";
+			std::cout << "			pop():	size = " << size << " start = " << start << " end = " << end << " capacity =" << capacity << std::endl;
+			std::cout << std::endl;
+	}
+
+	bool empty() {
+		return (size == 0);
+	}
+
+	bool full() {
+		return (size == capacity);
+	}
+
+	T operator[](int index)const {
+		return this->data[index];
+	}
+
+	T Pop(){
+	if (size == 0) throw - 1;
+	T tmp = data[start];
+	start++;
+	size--;
+	if (start == capacity) start = 0;
+	for (int i = 0; i < capacity; i++) std::cout << data[i] << " ";
+	std::cout << "pop():	size = " << size << " start = " << start << " end = " << end << std::endl;
+	return tmp;
+	}
 };
