@@ -122,13 +122,20 @@ private:
 		if (start < end)
 		{
 			for (size_t i = start; i <= end; i++) temp[i - start] = data[i];
+			start = 0;
+			end = n - size - 1;
+			for (size_t i = end + 1; i < n; i++) temp[i] = 0;
 		}
 		else {
 			for (size_t i = start; i < size; i++) temp[i - start] = data[i];
 			for (size_t i = 0; i <= end; i++) temp[i + size - start] = data[i];
+			start = 0;
+			end = n - size - 1;
+			for (size_t i = end + 1; i < n; i++) temp[i] = 0;
 		}
 		if (data) delete[]data;
 		data = temp;
+		capacity = n;
 	}
 public:
 	Queue() :Vector() {
@@ -152,31 +159,24 @@ public:
 	}
 
 	void push(T elem) {
-		if (full()) {
-			resize(size_t(capacity * 2.0));
-			start = 0;
-			end = capacity * 2.0 - size+1 ;
-			data[end-1] = elem;
-			size++;
-			end--;
-		}
-		else {
+		if (full()) resize(size_t(capacity * 2.0));
 			end++;
 			if (end == capacity) end = 0;
 			data[end] = elem;
 			size++;
-		}
 		for (int i = 0; i < capacity; i++) std::cout << data[i] << " ";
-		std::cout << "	size = " << size << " start = " << start << " end = " << end << std::endl;
+		std::cout << "			push():	size = " << size << " start = " << start << " end = " << end << " capacity ="<< capacity << std::endl;
+		std::cout<< std::endl;
 	}
 
 	void pop() {
-		if (size == 0) throw - 1;
-		start++;
-		size--;
-		if (start == capacity ) start = 0;
-		for (int i = 0; i < capacity; i++) std::cout << data[i] << " ";
-		std::cout << "	size = " << size << " start = " << start << " end = " << end << std::endl;
+			if (size == 0) throw - 1;
+			start++;
+			size--;
+			if (start == capacity) start = 0;
+			for (int i = 0; i < capacity; i++) std::cout << data[i] << " ";
+			std::cout << "			pop():	size = " << size << " start = " << start << " end = " << end << " capacity =" << capacity << std::endl;
+			std::cout << std::endl;
 	}
 
 	bool empty() {
@@ -190,5 +190,15 @@ public:
 	T operator[](int index)const {
 		return this->data[index];
 	}
-};
 
+	T Pop(){
+	if (size == 0) throw - 1;
+	T tmp = data[start];
+	start++;
+	size--;
+	if (start == capacity) start = 0;
+	for (int i = 0; i < capacity; i++) std::cout << data[i] << " ";
+	std::cout << "pop():	size = " << size << " start = " << start << " end = " << end << std::endl;
+	return tmp;
+	}
+};

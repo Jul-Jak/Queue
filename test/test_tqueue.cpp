@@ -74,20 +74,23 @@ TEST(Queue, return_false_when_queue_isnt_full) {
 
 TEST(Queue, right_algoritm) {
 	Queue<int> q(6);
-	q.push(10);
-	q.push(11);
-	q.push(0);
 	q.push(1);
 	q.push(2);
 	q.push(3);
-	q.pop();
-	q.pop();
-	q.push(4); 
+	q.push(4);
 	q.push(5);
-	q.push(7);
+	q.push(6);
+	q.pop();
+	q.pop();
+	q.push(7); 
 	q.push(8);
-	for (int i = 0; i < 8; i++) {
-		std::cout << q[i] << " ";
+	q.push(9);
+	q.push(10);
+	std::cout << std::endl;
+	int res[] = { 3,4,5,6,7,8,9,10 };
+	int i = 0;
+	while (!q.empty()) {
+		std::cout << "expected: " << res[i++] << " actual " << q.Pop() << std::endl;
 	}
 	std::cout << std::endl;
 }
